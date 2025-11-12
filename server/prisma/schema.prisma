@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User Authentication
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // hashed
+  name      String?
+  role      String   @default("student") // student|admin
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  materialSubmissions MaterialSubmission[]
+  securityReports     SecurityReport[]
+  announcements       Announcement[]
+}
+
+// Material Submissions
+model MaterialSubmission {
+  id            String   @id @default(uuid())
+  studentId     String?
+  userId        String?
+  contactEmail  String?
+  ipHash        String
+  type          String   // notes|solution|exam_paper|textbook
+  courseId      String
+  year          Int
+  title         String
+  filePath      String
+  originalName  String
+  mimeType      String
+  size          Int
+  status        String   @default("pending") // pending|approved|rejected
+  reviewerId    String?
+  reviewNote    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  user User? @relation(fields: [userId], references: [id])
+}
+
+// Announcements & Updates
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  category  String   // academic|information|sports|general
+  priority  String   @default("normal") // low|normal|high|urgent
+  authorId  String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User? @relation(fields: [authorId], references: [id])
+}
+
+// Academic Calendar
+model AcademicCalendar {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  category    String   // semester_start|semester_end|break|exam_period|event
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Exam Timetable
+model ExamTimetable {
+  id        String   @id @default(uuid())
+  courseId  String
+  courseName String
+  date      DateTime
+  time      String?
+  venue     String?
+  duration  String?
+  year      Int
+  semester  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Registration Notices
+model RegistrationNotice {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  deadline    DateTime?
+  priority    String   @default("normal")
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Student Representative Council
+model SRCMember {
+  id        String   @id @default(uuid())
+  name      String
+  position  String
+  email     String?
+  phone     String?
+  imageUrl  String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Enquiry Submissions
+model Enquiry {
+  id        String   @id @default(uuid())
+  name      String?
+  email     String?
+  subject   String
+  message   String
+  status    String   @default("pending") // pending|responded|resolved
+  response  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Campus Venues
+model Venue {
+  id          String   @id @default(uuid())
+  name        String
+  type        String   // lecture_hall|lab|office|sports_facility|other
+  building    String?
+  floor       String?
+  capacity    Int?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Security Reports
+model SecurityReport {
+  id          String   @id @default(uuid())
+  userId      String?
+  kind        String   // abuse|theft|other
+  description String
+  location    String?
+  contactEmail String?
+  attachmentPath String?
+  status      String   @default("pending") // pending|investigating|resolved|closed
+  ticketId    String   @unique
+  ipHash      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user User? @relation(fields: [userId], references: [id])
+}
+
+// Sports Venues
+model SportsVenue {
+  id          String   @id @default(uuid())
+  name        String
+  type        String   // field|court|gym|pool|other
+  location    String?
+  capacity    Int?
+  facilities  String?
+  availability String? // open|closed|maintenance
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Sports Coaches
+model SportsCoach {
+  id        String   @id @default(uuid())
+  name      String
+  sport     String
+  email     String?
+  phone     String?
+  bio       String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Sports Captains
+model SportsCaptain {
+  id        String   @id @default(uuid())
+  name      String
+  sport     String
+  year      String?
+  email     String?
+  phone     String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Sports Competitions
+model SportsCompetition {
+  id          String   @id @default(uuid())
+  title       String
+  sport       String
+  date        DateTime
+  time        String?
+  venue       String?
+  description String?
+  status      String   @default("upcoming") // upcoming|ongoing|completed|cancelled
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

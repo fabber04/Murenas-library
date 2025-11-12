@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard - Murena's Students Library</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .admin-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; margin-top:1.5rem; }
+      .panel { background:#fff; border-radius:8px; padding:1rem; box-shadow:0 6px 18px rgba(15,23,42,0.06); }
+    </style>
+  </head>
+  <body>
+    <%- include('../partials/header') %>
+    <main style="max-width: 1200px; margin: 3rem auto; padding: 0 1rem;">
+      <h1>Admin Dashboard</h1>
+      <p style="color:#64748b;">Placeholder admin dashboard. Implement panels for submissions, reports, and announcements here.</p>
+
+      <div class="admin-grid">
+        <a class="panel" href="/admin/submissions">Material Submissions</a>
+        <a class="panel" href="/admin/security-reports">Security Reports</a>
+        <a class="panel" href="/admin/announcements">Announcements</a>
+      </div>
+    </main>
+  </body>
+</html>

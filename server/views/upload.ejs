@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main style="max-width: 720px; margin: 3rem auto; padding: 0 1rem;">
+      <h1><%= title %></h1>
+      <p style="color: #64748b; margin-bottom: 2rem;">Upload study materials, notes, or exam papers to help your fellow students.</p>
+      
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error">
+          <strong>Error:</strong> <%= error %>
+        </div>
+      <% } %>
+      
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success">
+          <strong>Success:</strong> <%= success %>
+        </div>
+      <% } %>
+
+      <form action="/materials/submissions" method="post" enctype="multipart/form-data">
+        <label>Title *
+          <input name="title" required placeholder="e.g., Algebra Notes" value="<%= typeof formData !== 'undefined' && formData.title ? formData.title : '' %>" />
+        </label>
+        
+        <label>Course ID *
+          <input name="course_id" required placeholder="MATH101" value="<%= typeof formData !== 'undefined' && formData.course_id ? formData.course_id : '' %>" />
+        </label>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <label>Year *
+            <input type="number" name="year" value="<%= typeof formData !== 'undefined' && formData.year ? formData.year : new Date().getFullYear() %>" min="2000" max="2100" />
+          </label>
+          
+          <label>Type *
+            <select name="type" required>
+              <option value="notes" <%= typeof formData !== 'undefined' && formData.type === 'notes' ? 'selected' : '' %>>Notes</option>
+              <option value="solution" <%= typeof formData !== 'undefined' && formData.type === 'solution' ? 'selected' : '' %>>Solution</option>
+              <option value="exam_paper" <%= typeof formData !== 'undefined' && formData.type === 'exam_paper' ? 'selected' : '' %>>Exam Paper</option>
+              <option value="textbook" <%= typeof formData !== 'undefined' && formData.type === 'textbook' ? 'selected' : '' %>>Textbook</option>
+            </select>
+          </label>
+        </div>
+        
+        <label>File (PDF, JPG, PNG - Max 25MB) *
+          <input type="file" name="file" accept="application/pdf,image/*" required />
+          <small>Accepted formats: PDF, JPG, PNG. Maximum file size: 25MB</small>
+        </label>
+        
+        <button type="submit">Submit Material</button>
+      </form>
+    </main>
+  </body>
+</html>
+
+

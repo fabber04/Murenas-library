@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exam Materials - Murena's Students Library</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Exam Materials</h1>
+        <a href="/materials/submit" style="padding: 0.5rem 1rem; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">Upload Material</a>
+      </div>
+
+      <div style="margin-bottom: 2rem; padding: 1rem; background: #f5f5f5; border-radius: 4px;">
+        <form method="get" action="/materials" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <input type="text" name="query" placeholder="Search by title or course..." value="<%= query || '' %>" />
+          <select name="type">
+            <option value="">All Types</option>
+            <option value="notes" <%= type === 'notes' ? 'selected' : '' %>>Notes</option>
+            <option value="solution" <%= type === 'solution' ? 'selected' : '' %>>Solutions</option>
+            <option value="exam_paper" <%= type === 'exam_paper' ? 'selected' : '' %>>Exam Papers</option>
+            <option value="textbook" <%= type === 'textbook' ? 'selected' : '' %>>Textbooks</option>
+          </select>
+          <input type="number" name="year" placeholder="Year" value="<%= year || '' %>" />
+          <button type="submit">Filter</button>
+        </form>
+      </div>
+
+      <div id="materials-list">
+        <p style="color: #666;">Loading materials...</p>
+      </div>
+    </main>
+  </body>
+</html>

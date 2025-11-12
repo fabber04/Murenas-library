@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home - Murena's Students Library</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main style="max-width: 1200px; margin: 3rem auto; padding: 0 1rem;">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="margin-bottom: 1rem;">Welcome to Murena's Students Library</h1>
+        <p style="font-size: 1.125rem; color: #64748b; max-width: 600px; margin: 0 auto;">Your comprehensive resource for academic materials, information, and campus services.</p>
+      </div>
+
+      <!-- Search bar -->
+      <div style="max-width:720px; margin: 0 auto 2rem;">
+        <form action="/search" method="get" style="display:flex; gap:0.5rem;">
+          <input name="q" type="search" placeholder="Search materials, announcements, contacts..." value="" style="flex:1; padding:0.75rem 1rem; border-radius:8px; border:1px solid #e6eef8; box-shadow:none;" />
+          <button type="submit" style="padding:0.75rem 1rem; border-radius:8px; background:#2563eb; color:#fff; border:0; cursor:pointer;">Search</button>
+        </form>
+      </div>
+
+      <section style="margin-bottom: 3rem;">
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem; color: #1e293b;">Quick Links</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
+          <a href="/academics/calendar" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; transition: all 0.2s; border: 2px solid transparent; display: block;">
+            <div style="font-size: 2rem; margin-bottom: 0.75rem;">📅</div>
+            <strong style="font-size: 1.125rem; display: block; margin-bottom: 0.5rem;">Academic Calendar</strong>
+            <span style="color: #64748b; font-size: 0.875rem;">View important dates</span>
+          </a>
+          <a href="/academics/exams" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; transition: all 0.2s; border: 2px solid transparent; display: block;">
+            <div style="font-size: 2rem; margin-bottom: 0.75rem;">📝</div>
+            <strong style="font-size: 1.125rem; display: block; margin-bottom: 0.5rem;">Exam Timetable</strong>
+            <span style="color: #64748b; font-size: 0.875rem;">Check exam schedules</span>
+          </a>
+          <a href="/materials" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; transition: all 0.2s; border: 2px solid transparent; display: block;">
+            <div style="font-size: 2rem; margin-bottom: 0.75rem;">📚</div>
+            <strong style="font-size: 1.125rem; display: block; margin-bottom: 0.5rem;">Study Materials</strong>
+            <span style="color: #64748b; font-size: 0.875rem;">Browse resources</span>
+          </a>
+          <a href="/materials/submit" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; transition: all 0.2s; border: 2px solid transparent; display: block;">
+            <div style="font-size: 2rem; margin-bottom: 0.75rem;">⬆️</div>
+            <strong style="font-size: 1.125rem; display: block; margin-bottom: 0.5rem;">Upload Notes</strong>
+            <span style="color: #64748b; font-size: 0.875rem;">Share your materials</span>
+          </a>
+        </div>
+      </section>
+
+      <section style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem; color: #1e293b;">Announcements</h2>
+        <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid #2563eb;">
+          <p style="margin: 0; color: #64748b;">No announcements at this time. Check back later for updates.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  a[href*="/academics"]:hover,
+  a[href*="/materials"]:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: #2563eb;
+  }
+</style>

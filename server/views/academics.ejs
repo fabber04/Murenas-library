@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Academics - Murena's Students Library</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main style="max-width: 1200px; margin: 3rem auto; padding: 0 1rem;">
+      <h1>Academics</h1>
+      <p style="color: #64748b; margin-bottom: 2rem;">Access academic resources, calendars, and important information.</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+        <a href="/academics/calendar" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; display: block; transition: all 0.2s; border-top: 4px solid #2563eb;">
+          <h2 style="font-size: 1.375rem; margin-bottom: 0.75rem; color: #1e293b;">Academic Calendar</h2>
+          <p style="color: #64748b; margin: 0;">View important dates and deadlines</p>
+        </a>
+        
+        <a href="/academics/exams" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; display: block; transition: all 0.2s; border-top: 4px solid #10b981;">
+          <h2 style="font-size: 1.375rem; margin-bottom: 0.75rem; color: #1e293b;">Exam Timetable</h2>
+          <p style="color: #64748b; margin: 0;">Check your exam schedule</p>
+        </a>
+        
+        <a href="/academics/notices" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; display: block; transition: all 0.2s; border-top: 4px solid #f59e0b;">
+          <h2 style="font-size: 1.375rem; margin-bottom: 0.75rem; color: #1e293b;">Registration Notices</h2>
+          <p style="color: #64748b; margin: 0;">Important registration information</p>
+        </a>
+        
+        <a href="/academics/src" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: #1e293b; display: block; transition: all 0.2s; border-top: 4px solid #ef4444;">
+          <h2 style="font-size: 1.375rem; margin-bottom: 0.75rem; color: #1e293b;">Current SRC</h2>
+          <p style="color: #64748b; margin: 0;">Student Representative Council</p>
+        </a>
+      </div>
+    </main>
+    
+    <style>
+      a[href*="/academics"]:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+    </style>
+  </body>
+</html>

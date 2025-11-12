@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %> - Murena's Students Library</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main class="container" style="margin: 2rem auto; padding: 0 1rem;">
+      <h1 class="mt-2"><%= title %></h1>
+
+      <section class="card">
+        <p class="text-muted">Below are the current members of the Student Representative Council. Click a card to view contact details.</p>
+
+        <div class="grid grid-3 mt-3">
+          <% (members || []).forEach(function(member){ %>
+            <div class="card member-card">
+              <div class="avatar">
+                <% if (member.photoUrl) { %>
+                  <img src="<%= member.photoUrl %>" alt="<%= member.name %>" class="avatar-img" />
+                <% } else { %>
+                  <!-- SVG placeholder avatar -->
+                  <div class="avatar-placeholder">
+                    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <circle cx="12" cy="8" r="3.2" fill="#cbd5e1" />
+                      <path d="M4 20c0-3.3137 2.6863-6 6-6h4c3.3137 0 6 2.6863 6 6" stroke="#cbd5e1" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                <% } %>
+              </div>
+
+              <div class="member-body">
+                <div class="member-head">
+                  <div class="member-name"><%= member.name %></div>
+                  <div class="member-position"><%= member.position %></div>
+                </div>
+                <% if (member.contact) { %>
+                  <div class="member-contact mt-2">Contact: <a href="mailto:<%= member.contact %>"><%= member.contact %></a></div>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

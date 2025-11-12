@@ -1,0 +1,15 @@
+<nav style="padding: 0; background: #1e293b; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button onclick="window.history.back()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 0.9rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; transition: all 0.2s; font-weight: 500;">Back</button>
+      <div style="position: relative;">
+        <button id="menu-toggle" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 1rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; transition: all 0.2s; font-weight: 500;">Menu</button>
+        <div id="dropdown-menu" style="display: none; position: absolute; top: calc(100% + 0.5rem); left: 0; background: #fff; min-width: 280px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1000; max-height: 80vh; overflow-y: auto; border: 1px solid #e2e8f0; animation: fadeIn 0.2s ease-out;">
+          <a href="/" style="display: block; padding: 1rem 1.25rem; color: #1e293b; text-decoration: none; border-bottom: 1px solid #e2e8f0; transition: all 0.2s; font-weight: 500;">Home</a>
+          
+          <div style="border-bottom: 1px solid #e2e8f0;">
+            <div style="padding: 0.875rem 1.25rem; color: #64748b; font-weight: 700; background: #f8fafc; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.05em;">Academics</div>
+            <a href="/academics" style="display: block; padding: 0.75rem 1.25rem 0.75rem 2rem; color: #475569; text-decoration: none; border-bottom: 1px solid #f1f5f9; transition: all 0.2s; font-size: 0.9375rem;">Overview</a>
+            <a href="/academics/calendar" style="display: block; padding: 0.75rem 1.25rem 0.75rem 2rem; color: #475569; text-decoration: none; border-bottom: 1px solid #f1f5f9; transition: all 0.2s; font-size: 0.9375rem;">Academic Calendar</a>
+            <a href="/academics/exams" style="display: block; padding: 0.75rem 1.25rem 0.75rem 2rem; color: #475569; text-decoration: none; border-bottom: 1px solid #f1f5f9; transition: all 0.2s; font-size: 0.9375rem;">Exam Timetable</a>
+            <a href="/academics

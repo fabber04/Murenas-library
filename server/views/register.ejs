@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %> - Murena's Students Library</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main style="max-width: 480px; margin: 4rem auto; padding: 0 1rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h1>Register</h1>
+        <p style="color: #64748b;">Create a new student account</p>
+      </div>
+      
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error">
+          <strong>Error:</strong> <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/register" method="post">
+        <label>Name (Optional)
+          <input type="text" name="name" placeholder="Your full name" autocomplete="name" />
+        </label>
+        
+        <label>Email *
+          <input type="email" name="email" required placeholder="your.email@example.com" autocomplete="email" />
+        </label>
+        
+        <label>Password *
+          <input type="password" name="password" required placeholder="Minimum 6 characters" autocomplete="new-password" minlength="6" />
+          <small>Password must be at least 6 characters long</small>
+        </label>
+        
+        <button type="submit">Register</button>
+        
+        <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
+          <p style="color: #64748b; margin: 0;">Already have an account? <a href="/login">Login here</a></p>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>
+

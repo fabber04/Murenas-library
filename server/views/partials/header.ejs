@@ -1,0 +1,211 @@
+<nav class="site-header" role="navigation" aria-label="Main navigation">
+  <div class="site-header__inner container">
+    <div class="site-header__left">
+      <button class="btn btn-ghost btn-back" aria-label="Go back" onclick="window.history.back()">
+        <!-- left arrow icon -->
+        <svg class="icon icon-back" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <div class="menu-wrapper">
+        <button class="menu-toggle" id="menu-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-menu">Menu</button>
+        <div id="dropdown-menu" class="dropdown-menu" role="menu" aria-hidden="true">
+          <a role="menuitem" href="/" class="dropdown-item dropdown-item--home">Home</a>
+
+          <div class="dropdown-group">
+            <div class="dropdown-group__title">Academics</div>
+            <a role="menuitem" href="/academics" class="dropdown-item">Overview</a>
+            <a role="menuitem" href="/academics/calendar" class="dropdown-item">Academic Calendar</a>
+            <a role="menuitem" href="/academics/exams" class="dropdown-item">Exam Timetable</a>
+            <a role="menuitem" href="/academics/notices" class="dropdown-item">Registration Notices</a>
+            <a role="menuitem" href="/academics/src" class="dropdown-item">Current SRC</a>
+          </div>
+
+          <div class="dropdown-group">
+            <div class="dropdown-group__title">Exam Materials</div>
+            <a role="menuitem" href="/materials" class="dropdown-item">Browse Materials</a>
+            <a role="menuitem" href="/materials/submit" class="dropdown-item">Upload Material</a>
+          </div>
+
+          <div class="dropdown-group">
+            <div class="dropdown-group__title">Information</div>
+            <a role="menuitem" href="/info" class="dropdown-item">Overview</a>
+            <a role="menuitem" href="/info/enquiry" class="dropdown-item">Enquiry Desk</a>
+            <a role="menuitem" href="/info/updates" class="dropdown-item">Updates & Announcements</a>
+            <a role="menuitem" href="/info/venues" class="dropdown-item">Venues Directory</a>
+          </div>
+
+          <div class="dropdown-group">
+            <div class="dropdown-group__title">Sports</div>
+            <a role="menuitem" href="/sports" class="dropdown-item">Overview</a>
+            <a role="menuitem" href="/sports/venues" class="dropdown-item">Sports Venues</a>
+            <a role="menuitem" href="/sports/contacts" class="dropdown-item">Coaches & Captains</a>
+            <a role="menuitem" href="/sports/competitions" class="dropdown-item">Competitions</a>
+          </div>
+
+          <a role="menuitem" href="/security/report" class="dropdown-item dropdown-item--danger">Report Incident</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-header__brand">
+      <a href="/" class="brand-link">
+        <img src="/logo.png" alt="Murena's Library" class="brand-logo" onerror="this.style.display='none'" />
+        <span class="brand-title">Murena's Students Library</span>
+      </a>
+    </div>
+
+    <div class="site-header__actions">
+      <% if (typeof user !== 'undefined' && user) { %>
+        <div class="user-info">
+          <span class="user-name"><%= user.name || user.email %></span>
+          <% if (user.role === 'admin') { %>
+            <a href="/admin" class="btn btn-outline">Admin</a>
+          <% } %>
+          <form action="/logout" method="post" style="margin:0; display:inline-block;">
+            <button type="submit" class="btn btn-ghost">Logout</button>
+          </form>
+        </div>
+      <% } else { %>
+        <div class="auth-links">
+          <a href="/login" class="btn btn-ghost">Login</a>
+          <a href="/register" class="btn">Register</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</nav>
+  <!-- Left sidebar (visible on wide screens, hidden on small screens) -->
+  <aside class="left-sidebar" role="navigation" aria-label="Main sidebar">
+    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+      <a href="/" style="color:inherit; text-decoration:none; font-weight:700; padding:0.25rem 0;">Home</a>
+      <div style="margin-top:0.75rem;">
+        <div style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem;">Academics</div>
+        <nav aria-label="Academics">
+          <a href="/academics" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Overview</a>
+          <a href="/academics/calendar" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Calendar</a>
+          <a href="/academics/exams" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Exam Timetable</a>
+          <a href="/academics/notices" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Registration Notices</a>
+          <a href="/academics/src" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Current SRC</a>
+        </nav>
+      </div>
+
+      <div style="margin-top:0.75rem;">
+        <div style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem;">Materials</div>
+        <nav aria-label="Materials">
+          <a href="/materials" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Browse</a>
+          <a href="/materials/submit" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Upload</a>
+        </nav>
+      </div>
+
+      <div style="margin-top:0.75rem;">
+        <div style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem;">Information</div>
+        <nav aria-label="Information">
+          <a href="/info" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Overview</a>
+          <a href="/info/enquiry" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Enquiry Desk</a>
+          <a href="/info/updates" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Updates</a>
+          <a href="/info/venues" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Venues</a>
+        </nav>
+      </div>
+
+      <div style="margin-top:0.75rem;">
+        <div style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem;">Sports</div>
+        <nav aria-label="Sports">
+          <a href="/sports" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Overview</a>
+          <a href="/sports/venues" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Venues</a>
+          <a href="/sports/contacts" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Coaches & Captains</a>
+          <a href="/sports/competitions" style="display:block; color:inherit; text-decoration:none; padding:0.25rem 0;">Competitions</a>
+        </nav>
+      </div>
+
+      <div style="margin-top:0.75rem;">
+        <a href="/security/report" style="display:block; color:#ff7b7b; text-decoration:none; padding:0.25rem 0;">Report Incident</a>
+      </div>
+    </div>
+  </aside>
+
+<style>
+  /* Header interactions */
+  #menu-toggle:hover,
+  button[onclick*="history.back"]:hover {
+    background: rgba(255,255,255,0.02);
+    transform: translateY(-1px);
+  }
+
+  #dropdown-menu a:hover {
+    background: #f1f5f9;
+    color: #2563eb;
+    padding-left: 1.5rem;
+  }
+
+  #dropdown-menu > div > a:hover {
+    padding-left: 2rem;
+  }
+
+  /* Left sidebar styles */
+  .left-sidebar { display: none; }
+  .left-sidebar a { color: #e6eef8; text-decoration: none; }
+  .left-sidebar nav a { color: #cbd5e1; }
+
+  /* Small screens: ensure menu stretches full width */
+  @media (max-width: 640px) {
+    #dropdown-menu { left: -0.5rem; right: -0.5rem; min-width: auto; border-radius: 8px; }
+  }
+
+  /* Large screens: show sidebar and shift main content */
+  @media (min-width: 992px) {
+    .left-sidebar { display:block; position:fixed; left:0; top:0; height:100vh; width:260px; background:#071029; color:#e6eef8; padding:1.25rem; box-shadow:4px 0 24px rgba(2,6,23,0.12); z-index:1000; overflow:auto; }
+    body > main { margin-left: 300px; transition: margin-left 150ms ease; }
+    #menu-toggle { display: none !important; }
+    #dropdown-menu { display: none !important; }
+  }
+</style>
+
+<script>
+  (function(){
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('dropdown-menu');
+    if (!toggle || !menu) return;
+
+    function openMenu() {
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('no-scroll');
+      const first = menu.querySelector('a[role="menuitem"]');
+      if (first) first.focus();
+    }
+
+    function closeMenu() {
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('no-scroll');
+      try { toggle.focus(); } catch (e){}
+    }
+
+    toggle.addEventListener('click', function(e){
+      e.stopPropagation();
+      if (menu.classList.contains('open')) closeMenu(); else openMenu();
+    });
+
+    // Close on outside click or ESC
+    document.addEventListener('click', function(event){
+      if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        closeMenu();
+      }
+    });
+
+    // Close menu after selecting an item
+    menu.querySelectorAll('a[role="menuitem"]').forEach(link => {
+      link.addEventListener('click', function() { closeMenu(); });
+    });
+  })();
+</script>

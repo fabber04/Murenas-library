@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Report Security Incident - Murena's Students Library</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main style="max-width: 720px; margin: 3rem auto; padding: 0 1rem;">
+      <h1>Report Security Incident</h1>
+      <p style="color: #64748b; margin-bottom: 2rem;">Report abuse, theft, or other security concerns. Your report will be handled confidentially.</p>
+      
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error">
+          <strong>Error:</strong> <%= error %>
+        </div>
+      <% } %>
+      
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success">
+          <strong>Success:</strong> <%= success %>
+        </div>
+      <% } %>
+      
+      <form action="/security/reports" method="post" enctype="multipart/form-data">
+        <label>Incident Type *
+          <select name="kind" required>
+            <option value="">Select type...</option>
+            <option value="abuse">Abuse/Harassment</option>
+            <option value="theft">Theft</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        
+        <label>Description *
+          <textarea name="description" required rows="6" placeholder="Please provide details about the incident..."></textarea>
+        </label>
+        
+        <label>Location
+          <input type="text" name="location_text" placeholder="Building, room number, or area" />
+        </label>
+        
+        <label>Contact Email (Optional)
+          <input type="email" name="reporter_contact" placeholder="your.email@example.com" />
+          <small>We may contact you for more information. Leave blank for anonymous report.</small>
+        </label>
+        
+        <label>Attachment (Optional)
+          <input type="file" name="attachment" accept="image/*,application/pdf" />
+          <small>Photos or documents related to the incident (Max 25MB)</small>
+        </label>
+        
+        <button type="submit" class="btn-danger">Submit Report</button>
+      </form>
+    </main>
+  </body>
+</html>
