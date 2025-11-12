@@ -1,0 +1,11 @@
+node_modules/
+dist/
+server/dev.db
+server/*.log
+.env
+uploads/
+*.local
+.vscode/
+/.DS_Store
+npm-debug.log*
+yarn-error.log*
