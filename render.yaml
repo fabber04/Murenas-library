@@ -28,6 +28,6 @@ services:
 
 databases:
   - name: murenas-library-db
-    plan: starter
+    plan: free
     databaseName: murenas_library
     user: murenas_user
