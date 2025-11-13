@@ -2,6 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: path.join(process.cwd(), '.env') });
 
 const prisma = new PrismaClient();
 
@@ -36,11 +40,22 @@ async function uploadDirectory(options: UploadOptions) {
     console.log(`✅ Created uploads directory: ${uploadsDir}`);
   }
 
-  // Get all files from source directory
-  const files = fs.readdirSync(sourceDir).filter(file => {
-    const filePath = path.join(sourceDir, file);
-    return fs.statSync(filePath).isFile();
-  });
+  // Get all files from source directory (recursively)
+  function getAllFiles(dir: string, fileList: string[] = []): string[] {
+    const files = fs.readdirSync(dir);
+    files.forEach(file => {
+      const filePath = path.join(dir, file);
+      if (fs.statSync(filePath).isDirectory()) {
+        getAllFiles(filePath, fileList);
+      } else {
+        fileList.push(filePath);
+      }
+    });
+    return fileList;
+  }
+
+  const allFiles = getAllFiles(sourceDir);
+  const files = allFiles.map(file => path.relative(sourceDir, file));
 
   if (files.length === 0) {
     console.log('ℹ️  No files found in source directory');
@@ -56,13 +71,14 @@ async function uploadDirectory(options: UploadOptions) {
   let successCount = 0;
   let errorCount = 0;
 
-  for (const file of files) {
-    const sourcePath = path.join(sourceDir, file);
+  for (const relativeFile of files) {
+    const sourcePath = path.join(sourceDir, relativeFile);
     const fileStats = fs.statSync(sourcePath);
+    const file = path.basename(relativeFile);
     
     // Check file size (25MB limit)
     if (fileStats.size > 25 * 1024 * 1024) {
-      console.log(`⚠️  Skipping ${file} - file too large (${(fileStats.size / 1024 / 1024).toFixed(2)}MB)`);
+      console.log(`⚠️  Skipping ${relativeFile} - file too large (${(fileStats.size / 1024 / 1024).toFixed(2)}MB)`);
       errorCount++;
       continue;
     }
@@ -71,7 +87,7 @@ async function uploadDirectory(options: UploadOptions) {
     const ext = path.extname(file).toLowerCase();
     const allowedExtensions = ['.pdf', '.jpg', '.jpeg', '.png'];
     if (!allowedExtensions.includes(ext)) {
-      console.log(`⚠️  Skipping ${file} - unsupported file type (${ext})`);
+      console.log(`⚠️  Skipping ${relativeFile} - unsupported file type (${ext})`);
       errorCount++;
       continue;
     }
@@ -90,7 +106,8 @@ async function uploadDirectory(options: UploadOptions) {
       fs.copyFileSync(sourcePath, destPath);
 
       // Extract title from filename (remove extension)
-      const title = path.basename(file, ext);
+      // Use relative path for title to preserve folder structure info
+      const title = relativeFile.replace(ext, '').replace(/[\/\\]/g, ' - ');
 
       // Create database record
       const submission = await prisma.materialSubmission.create({
@@ -109,10 +126,10 @@ async function uploadDirectory(options: UploadOptions) {
         }
       });
 
-      console.log(`✅ Uploaded: ${file} → ${submission.id}`);
+      console.log(`✅ Uploaded: ${relativeFile} → ${submission.id}`);
       successCount++;
     } catch (error: any) {
-      console.error(`❌ Error uploading ${file}:`, error.message);
+      console.error(`❌ Error uploading ${relativeFile}:`, error.message);
       errorCount++;
     }
   }
