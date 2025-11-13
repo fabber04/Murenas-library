@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: murenas-library-server
+    env: docker
+    repo: https://github.com/fabber04/Murenas-library
+    branch: main
+    dockerfilePath: server/Dockerfile
+    plan: starter
+    envVars:
+      - key: PORT
+        value: "4000"
+    autoDeploy: true
