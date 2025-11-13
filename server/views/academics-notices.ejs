@@ -8,9 +8,138 @@
   </head>
   <body>
     <%- include('partials/header') %>
-    <main style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
-      <h1><%= title %></h1>
-      <p style="color: #666;">Content coming soon...</p>
+    <main class="container notices-page">
+      <section class="notice-banner card">
+        <div class="notice-banner__content">
+          <span class="badge badge-soft">Academic Year 2025 / 2026</span>
+          <h1><%= title %></h1>
+          <p class="text-muted">
+            Stay on top of key registration deadlines, required documents, and payment milestones. Check this page frequently—updates are posted as soon as Registrar’s Office publishes new notices.
+          </p>
+          <div class="notice-actions">
+            <a class="btn btn-light" href="/info/enquiry">Contact Admissions</a>
+          </div>
+        </div>
+        <div class="notice-banner__dates">
+          <div class="notice-banner__dates-item">
+            <span class="label">Undergraduate</span>
+            <strong>14 Oct – 08 Nov</strong>
+            <small>Online registration window</small>
+          </div>
+          <div class="notice-banner__dates-item">
+            <span class="label">Postgraduate</span>
+            <strong>21 Oct – 15 Nov</strong>
+            <small>Late penalties begin 18 Nov</small>
+          </div>
+          <div class="notice-banner__dates-item">
+            <span class="label">Fee Clearance</span>
+            <strong>28 Nov</strong>
+            <small>Deadline to confirm payment plans</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="card notices-section">
+        <div class="section-header">
+          <h2>Current Registration Notices</h2>
+          <p class="text-muted">Issued by the Registrar’s Department · Last updated <%= new Date().toLocaleDateString('en-GB') %></p>
+        </div>
+
+        <div class="notice-grid">
+          <article class="notice-card">
+            <header>
+              <h3>Freshman &amp; Transfer Students</h3>
+              <span class="badge badge-info">New</span>
+            </header>
+            <ul>
+              <li>Upload certified copies of ID, academic transcripts, and offer letter before completing online forms.</li>
+              <li>Book your physical verification slot via the Admissions portal—slots fill up quickly.</li>
+              <li>All freshmen must attend the orientation briefing on <strong>4 November</strong> in the Great Hall.</li>
+            </ul>
+            <footer>
+              <a href="mailto:admissions@nust.ac.zw">Need help? admissions@nust.ac.zw</a>
+            </footer>
+          </article>
+
+          <article class="notice-card">
+            <header>
+              <h3>Returning Students</h3>
+              <span class="badge badge-warning">Action Required</span>
+            </header>
+            <ul>
+              <li>Clear outstanding library fines and accommodation balances before attempting online registration.</li>
+              <li>Course add/drop period ends <strong>15 November</strong>; faculty approval is required for late amendments.</li>
+              <li>Ensure your departmental advisor signs off on the study plan prior to fee clearance.</li>
+            </ul>
+            <footer>
+              <a href="mailto:studentaccounts@nust.ac.zw">Check clearance status</a>
+            </footer>
+          </article>
+
+          <article class="notice-card">
+            <header>
+              <h3>International Students</h3>
+              <span class="badge badge-success">Reminder</span>
+            </header>
+            <ul>
+              <li>Submit valid study permit and passport copies through the International Office portal.</li>
+              <li>Medical insurance proof must be uploaded before system unlocks course registration.</li>
+              <li>Contact the International Office for assistance with visa renewals and travel letters.</li>
+            </ul>
+            <footer>
+              <a href="mailto:international@nust.ac.zw">international@nust.ac.zw</a>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section class="card notices-section">
+        <div class="section-header">
+          <h2>Registration Checklist</h2>
+          <p class="text-muted">Follow each step in order to avoid delays.</p>
+        </div>
+
+        <ol class="notice-steps">
+          <li>
+            <h4>Confirm Fee Status</h4>
+            <p>Retrieve invoice from the Student Accounts portal, verify payments, and arrange a plan if needed.</p>
+          </li>
+          <li>
+            <h4>Update Personal Details</h4>
+            <p>Log into the student portal, review contact information, and upload any missing identification documents.</p>
+          </li>
+          <li>
+            <h4>Select Courses Online</h4>
+            <p>Use the e-Register system to add courses. Save and submit for your department advisor to approve.</p>
+          </li>
+          <li>
+            <h4>Print Confirmation Slip</h4>
+            <p>After approval, print the registration confirmation slip and keep a PDF copy for your records.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="card notices-section">
+        <div class="section-header">
+          <h2>Need Assistance?</h2>
+          <p class="text-muted">Popular help lines during registration rush.</p>
+        </div>
+
+        <div class="notice-help">
+          <div>
+            <strong>Registrar’s Helpdesk</strong>
+            <p>+263-29-2282842 ext 2404 / 2403 · <a href="mailto:registrar@nust.ac.zw">registrar@nust.ac.zw</a></p>
+          </div>
+          <div>
+            <strong>Student Accounts</strong>
+            <p>+263-29-2282842 ext 2295 / 2522 / 2663 · <a href="mailto:studentaccounts@nust.ac.zw">studentaccounts@nust.ac.zw</a></p>
+          </div>
+          <div>
+            <strong>ICT Support</strong>
+            <p>+263-29-2282842 ext 2245 · <a href="mailto:icts@nust.ac.zw">icts@nust.ac.zw</a></p>
+          </div>
+        </div>
+      </section>
     </main>
   </body>
 </html>
