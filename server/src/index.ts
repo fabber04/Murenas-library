@@ -5,12 +5,11 @@ import morgan from 'morgan';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
-import connectPgSimple from 'connect-pg-simple';
+import SQLiteStore from 'connect-sqlite3';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
 import crypto from 'crypto';
-import { Pool } from 'pg';
 import { materialsRouter } from './routes/materials.js';
 import { authRouter } from './routes/auth.js';
 import { adminRouter } from './routes/admin.js';
@@ -104,22 +103,14 @@ const ministerialCouncil = [
   }
 ];
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error('DATABASE_URL environment variable must be set');
-}
-
-const PgSession = connectPgSimple(session);
-const pgPool = new Pool({
-  connectionString: databaseUrl,
-  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
-});
+// SQLite session store
+const SQLiteStoreSession = SQLiteStore(session);
 
 app.use(session({
-  store: new PgSession({
-    pool: pgPool,
-    tableName: 'session',
-    createTableIfMissing: true
+  store: new (SQLiteStoreSession as any)({
+    db: 'sessions.db',
+    dir: path.join(process.cwd(), 'data'),
+    table: 'session'
   }),
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
   resave: false,
@@ -202,8 +193,8 @@ app.get('/academics/calendar', async (_req, res) => {
     let calendarDoc = await prisma.materialSubmission.findFirst({
       where: {
         OR: [
-          { title: { contains: 'revised calendar', mode: 'insensitive' } },
-          { title: { contains: 'calendar', mode: 'insensitive' } }
+          { title: { contains: 'revised calendar' } },
+          { title: { contains: 'calendar' } }
         ],
         status: 'approved'
       },
@@ -215,8 +206,8 @@ app.get('/academics/calendar', async (_req, res) => {
       calendarDoc = await prisma.materialSubmission.findFirst({
         where: {
           OR: [
-            { title: { contains: 'revised calendar', mode: 'insensitive' } },
-            { title: { contains: 'calendar', mode: 'insensitive' } }
+            { title: { contains: 'revised calendar' } },
+            { title: { contains: 'calendar' } }
           ]
         },
         orderBy: { createdAt: 'desc' }
@@ -258,13 +249,53 @@ app.get('/academics/src', (_req, res) => {
   });
 });
 
-app.get('/materials', (_req, res) => {
-  res.render('materials', { 
-    title: 'Exam Materials',
-    query: _req.query.query || '',
-    type: _req.query.type || '',
-    year: _req.query.year || ''
-  });
+app.get('/materials', async (req, res) => {
+  try {
+    const query = (req.query.query as string) || '';
+    const type = (req.query.type as string) || '';
+    const year = req.query.year ? parseInt(req.query.year as string) : null;
+
+    // Build where clause for filtering
+    const where: any = {
+      status: 'approved' // Only show approved materials
+    };
+
+    if (query) {
+      where.title = { contains: query };
+    }
+
+    if (type) {
+      where.type = type;
+    }
+
+    if (year) {
+      where.year = year;
+    }
+
+    const materials = await prisma.materialSubmission.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take: 100 // Limit to 100 results
+    });
+
+    res.render('materials', { 
+      title: 'Exam Materials',
+      materials,
+      query: query || '',
+      type: type || '',
+      year: year || ''
+    });
+  } catch (error) {
+    console.error('Error fetching materials:', error);
+    res.render('materials', { 
+      title: 'Exam Materials',
+      materials: [],
+      query: '',
+      type: '',
+      year: '',
+      error: 'Failed to load materials'
+    });
+  }
 });
 
 app.get('/materials/submit', (req, res) => {

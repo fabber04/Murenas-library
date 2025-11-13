@@ -29,8 +29,61 @@
         </form>
       </div>
 
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error">
+          <strong>Error:</strong> <%= error %>
+        </div>
+      <% } %>
+
       <div id="materials-list">
-        <p style="color: #666;">Loading materials...</p>
+        <% if (typeof materials !== 'undefined' && materials.length > 0) { %>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            <% materials.forEach(function(material) { %>
+              <div class="card" style="display: flex; flex-direction: column;">
+                <div style="flex: 1;">
+                  <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem;">
+                    <%= material.title %>
+                  </h3>
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                    <span style="background: #e3f2fd; color: #1976d2; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600;">
+                      <%= material.type.replace('_', ' ').toUpperCase() %>
+                    </span>
+                    <span style="background: #f5f5f5; color: #666; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem;">
+                      <%= material.courseId %>
+                    </span>
+                    <span style="background: #f5f5f5; color: #666; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem;">
+                      <%= material.year %>
+                    </span>
+                  </div>
+                  <p style="color: #666; font-size: 0.875rem; margin: 0.5rem 0;">
+                    <small><%= material.originalName %></small>
+                  </p>
+                  <p style="color: #999; font-size: 0.75rem; margin: 0.5rem 0 0 0;">
+                    Uploaded: <%= new Date(material.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </p>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+                  <a href="/uploads/<%= material.filePath.split('/').pop() %>" 
+                     download="<%= material.originalName %>" 
+                     class="btn btn-primary" 
+                     style="width: 100%; text-align: center; display: block;">
+                    Download
+                  </a>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="card" style="text-align: center; padding: 3rem 2rem;">
+            <p style="color: #666; margin: 0;">
+              <% if (query || type || year) { %>
+                No materials found matching your search criteria.
+              <% } else { %>
+                No materials available yet. Be the first to <a href="/materials/submit">upload materials</a>!
+              <% } %>
+            </p>
+          </div>
+        <% } %>
       </div>
     </main>
   </body>
