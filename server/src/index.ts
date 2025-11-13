@@ -5,11 +5,12 @@ import morgan from 'morgan';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
-import SQLiteStore from 'connect-sqlite3';
+import connectPgSimple from 'connect-pg-simple';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
 import crypto from 'crypto';
+import { Pool } from 'pg';
 import { materialsRouter } from './routes/materials.js';
 import { authRouter } from './routes/auth.js';
 import { adminRouter } from './routes/admin.js';
@@ -18,12 +19,107 @@ import { AuthRequest } from './middleware/auth.js';
 
 const app = express();
 
-// Session configuration
-const SQLiteStoreSession = SQLiteStore(session);
+const executiveCouncil = [
+  {
+    name: 'Stacey Majuru',
+    position: 'President',
+    photoUrl: '/images/src/1.jpeg',
+    contact: 'president.src@nust.ac.zw'
+  },
+  {
+    name: 'Kudzai Zhuwaki',
+    position: 'Vice President',
+    photoUrl: '/images/src/2.jpeg',
+    contact: 'vicepresident.src@nust.ac.zw'
+  },
+  {
+    name: 'Tinotenda J. Kademeteme',
+    position: 'Secretary General',
+    photoUrl: '/images/src/3.jpeg',
+    contact: 'secretary.src@nust.ac.zw'
+  },
+  {
+    name: 'Tamia H. S. Moyo',
+    position: 'Treasurer General',
+    photoUrl: '/images/src/4.jpeg',
+    contact: 'treasurer.src@nust.ac.zw'
+  }
+];
+
+const ministerialCouncil = [
+  {
+    name: 'Matthias T. Nyamande',
+    position: 'Academic Affairs',
+    photoUrl: '/images/src/5.jpeg'
+  },
+  {
+    name: 'Blessed Shawn Charlie',
+    position: 'Entertainment',
+    photoUrl: '/images/src/6.jpeg'
+  },
+  {
+    name: 'Tinotenda Nyamadzawo',
+    position: 'Entertainment',
+    photoUrl: '/images/src/7.jpeg'
+  },
+  {
+    name: 'Sithatshisiwe A. Ncube',
+    position: 'Clubs and Societies',
+    photoUrl: '/images/src/8.jpeg'
+  },
+  {
+    name: 'Brighton Samutamvu',
+    position: 'Clubs and Societies',
+    photoUrl: '/images/src/9.jpeg'
+  },
+  {
+    name: 'Felicia Madeyi',
+    position: 'Food, Health and Student Welfare',
+    photoUrl: '/images/src/10.jpeg'
+  },
+  {
+    name: 'Panashe Divine Karidzagundi',
+    position: 'Information and Publicity',
+    photoUrl: '/images/src/11.jpeg'
+  },
+  {
+    name: 'Learnmore Ngirandi',
+    position: 'Legal and Constitutional Affairs',
+    photoUrl: '/images/src/12.jpeg'
+  },
+  {
+    name: 'Nyasha Paundi',
+    position: 'Resident and Non Resident Students',
+    photoUrl: '/images/src/13.jpeg'
+  },
+  {
+    name: 'Presley Chadenga',
+    position: 'Sports and Recreation',
+    photoUrl: null
+  },
+  {
+    name: 'Thembani Godwill Nyoni',
+    position: 'Sports and Recreation',
+    photoUrl: null
+  }
+];
+
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL environment variable must be set');
+}
+
+const PgSession = connectPgSimple(session);
+const pgPool = new Pool({
+  connectionString: databaseUrl,
+  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+});
+
 app.use(session({
-  store: new (SQLiteStoreSession as any)({
-    db: 'sessions.db',
-    dir: './data'
+  store: new PgSession({
+    pool: pgPool,
+    tableName: 'session',
+    createTableIfMissing: true
   }),
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
   resave: false,
@@ -56,6 +152,9 @@ const uploadsDir = process.env.UPLOADS_DIR || path.join(process.cwd(), 'uploads'
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+
+// Serve uploaded files
+app.use('/uploads', express.static(uploadsDir));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -110,15 +209,12 @@ app.get('/academics/notices', (_req, res) => {
 });
 
 app.get('/academics/src', (_req, res) => {
-  // Sample SRC members - replace with DB-backed data when available
-  const members = [
-    { name: 'Asha Mwangi', position: 'President', photoUrl: null, contact: 'asha.mwangi@example.edu' },
-    { name: 'Samuel Osei', position: 'Vice President', photoUrl: null, contact: 'samuel.osei@example.edu' },
-    { name: 'Lilian Kim', position: 'Secretary', photoUrl: null, contact: 'lilian.kim@example.edu' },
-    { name: 'Peter Adu', position: 'Treasurer', photoUrl: null, contact: 'peter.adu@example.edu' },
-    { name: 'Nora Mensah', position: 'Social Secretary', photoUrl: null, contact: 'nora.mensah@example.edu' }
-  ];
-  res.render('academics-src', { title: 'Current SRC', members });
+  const members = [...executiveCouncil, ...ministerialCouncil];
+  res.render('academics-src', {
+    title: 'Student Representative Council',
+    topMembers: members.slice(0, 3),
+    ministerMembers: members.slice(3)
+  });
 });
 
 app.get('/materials', (_req, res) => {
