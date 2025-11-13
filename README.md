@@ -58,11 +58,12 @@ Running the Application
    npm install
    ```
 
-2. Set up database (first time only):
+2. Set up database (PostgreSQL required):
    ```bash
    cd server
-   DATABASE_URL="file:./dev.db" npx prisma generate
-   DATABASE_URL="file:./dev.db" npx prisma migrate dev
+   # Set DATABASE_URL in .env file (see Environment Variables section)
+   npm run prisma:generate
+   npm run prisma:migrate
    ```
 
 ### Start the Server
@@ -72,12 +73,12 @@ The application uses server-side rendering (EJS templates), so you only need to 
 ```bash
 cd server
 npm run build
-DATABASE_URL="file:./dev.db" node dist/index.js
+npm start
 ```
 
 Or in one line:
 ```bash
-cd server && npm run build && DATABASE_URL="file:./dev.db" node dist/index.js
+cd server && npm run build && npm start
 ```
 
 The server will start on **http://localhost:4000**
@@ -93,22 +94,33 @@ Open your browser and go to:
 For development with auto-reload on file changes:
 ```bash
 cd server
-DATABASE_URL="file:./dev.db" npm run dev
+npm run dev
 ```
 
-Note: The `dev` script uses `ts-node-dev` which may have issues with the project path containing special characters. If you encounter errors, use the build + run approach above.
+Note: Make sure your `.env` file is configured with `DATABASE_URL` before running. The `dev` script uses `ts-node-dev` which may have issues with the project path containing special characters. If you encounter errors, use the build + run approach above.
 
 ### Environment Variables
 
-Create a `.env` file in the `server/` directory (optional):
+Create a `.env` file in the `server/` directory:
 ```
 PORT=4000
-DATABASE_URL=file:./dev.db
+DATABASE_URL=postgresql://user:password@localhost:5432/murenas_library
+DATABASE_SSL=false
+SESSION_SECRET=your-secret-key-change-in-production
 UPLOADS_DIR=uploads
 ANONYMOUS_UPLOADS_ENABLED=true
 CAPTCHA_PROVIDER=
 CAPTCHA_SECRET_KEY=
 ```
+
+**Required:**
+- `DATABASE_URL` - PostgreSQL connection string
+- `SESSION_SECRET` - Secret key for session encryption (use a strong random string)
+
+**Optional:**
+- `DATABASE_SSL` - Set to `true` if using a cloud database with SSL
+- `PORT` - Server port (default: 4000)
+- `UPLOADS_DIR` - Directory for uploaded files (default: `uploads`)
 
 ### Troubleshooting
 
@@ -118,13 +130,69 @@ CAPTCHA_SECRET_KEY=
 lsof -ti:4000 | xargs kill -9
 
 # Or use a different port
-PORT=4001 DATABASE_URL="file:./dev.db" node dist/index.js
+PORT=4001 npm start
 ```
 
 Configuration Flags
 -------------------
 - `ANONYMOUS_UPLOADS_ENABLED` (default: true) — allow public uploads to submissions queue.
 - `CAPTCHA_PROVIDER` — e.g., reCAPTCHA hCaptcha; required if anonymous uploads enabled.
+
+GitHub Pages & Deployment
+--------------------------
+
+### ⚠️ Important: Two Different Sites
+
+**GitHub Pages** (currently live):
+- ✅ Shows **documentation only** (`docs/` folder)
+- ❌ **Cannot run the Express server** (GitHub Pages only serves static files)
+- URL: `https://fabber04.github.io/Murenas-library/`
+
+**Web Application** (needs separate hosting):
+- ✅ Full Express server with database, authentication, file uploads
+- ❌ **Cannot run on GitHub Pages** - needs Node.js hosting (Railway, Render, etc.)
+- See `DEPLOYMENT_QUICK_START.md` for deployment instructions
+
+### Documentation Site (GitHub Pages)
+
+Documentation is automatically deployed to GitHub Pages when changes are pushed to the `main` or `master` branch.
+
+**To enable GitHub Pages:**
+1. Go to your repository Settings → Pages
+2. Under "Source", select "GitHub Actions"
+3. The workflow (`.github/workflows/pages.yml`) will automatically build and deploy documentation from the `docs/` folder
+
+**Access your documentation:**
+- URL: `https://fabber04.github.io/Murenas-library/`
+
+### Continuous Integration
+
+GitHub Actions workflows are configured for:
+- **CI** (`.github/workflows/ci.yml`): Runs tests and builds on every push/PR
+- **Pages** (`.github/workflows/pages.yml`): Deploys documentation to GitHub Pages
+- **Deploy** (`.github/workflows/deploy.yml`): Template for application deployment
+
+### Deployment Setup
+
+To deploy the application to a hosting service:
+
+1. **Set GitHub Secrets:**
+   - Go to repository Settings → Secrets and variables → Actions
+   - Add the following secrets:
+     - `DATABASE_URL` - Your PostgreSQL connection string
+     - `SESSION_SECRET` - A strong random secret for sessions
+
+2. **Configure Deployment:**
+   - Edit `.github/workflows/deploy.yml`
+   - Add your deployment commands (Railway, Render, Heroku, Vercel, etc.)
+
+**Example deployment services:**
+- **Railway**: `railway up`
+- **Render**: `render deploy`
+- **Heroku**: `git push heroku main`
+- **Vercel**: `vercel --prod`
+
+**Note:** The Express server requires a Node.js hosting environment. GitHub Pages only serves static files, so it cannot host the application itself.
 
 License
 -------
