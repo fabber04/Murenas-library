@@ -6,6 +6,8 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import SQLiteStore from 'connect-sqlite3';
+import pg from 'pg';
+import connectPgSimple from 'connect-pg-simple';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
@@ -103,15 +105,35 @@ const ministerialCouncil = [
   }
 ];
 
-// SQLite session store
-const SQLiteStoreSession = SQLiteStore(session);
+// Session store configuration - use PostgreSQL if DATABASE_URL is PostgreSQL, otherwise SQLite
+const isPostgres = process.env.DATABASE_URL?.startsWith('postgresql://') || process.env.DATABASE_URL?.startsWith('postgres://');
 
-app.use(session({
-  store: new (SQLiteStoreSession as any)({
+let sessionStore: any;
+
+if (isPostgres) {
+  // PostgreSQL session store for production (Render, Railway, etc.)
+  const PgSession = connectPgSimple(session);
+  const pgPool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+  });
+  sessionStore = new PgSession({
+    pool: pgPool,
+    tableName: 'user_sessions',
+    createTableIfMissing: true
+  });
+} else {
+  // SQLite session store for local development
+  const SQLiteStoreSession = SQLiteStore(session);
+  sessionStore = new (SQLiteStoreSession as any)({
     db: 'sessions.db',
     dir: path.join(process.cwd(), 'data'),
     table: 'session'
-  }),
+  });
+}
+
+app.use(session({
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
