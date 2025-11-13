@@ -142,11 +142,20 @@ export function authRouter() {
         };
 
         return res.redirect('/');
-      } catch (error) {
+      } catch (error: any) {
         console.error('Register error:', error);
+        // Provide more specific error messages
+        let errorMessage = 'An error occurred. Please try again.';
+        if (error?.code === 'P2002') {
+          errorMessage = 'Email already registered. Please login instead.';
+        } else if (error?.message?.includes('connect')) {
+          errorMessage = 'Database connection error. Please contact support.';
+        } else if (error?.message) {
+          errorMessage = `Error: ${error.message}`;
+        }
         return res.render('register', {
           title: 'Register',
-          error: 'An error occurred. Please try again.'
+          error: errorMessage
         });
       }
     }
