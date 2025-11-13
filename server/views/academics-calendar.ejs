@@ -8,9 +8,43 @@
   </head>
   <body>
     <%- include('partials/header') %>
-    <main style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
-      <h1><%= title %></h1>
-      <p style="color: #666;">Academic calendar coming soon...</p>
+    <main class="container" style="margin: 2rem auto; padding: 0 1rem;">
+      <h1 class="mt-2"><%= title %></h1>
+
+      <% if (calendarDoc) { %>
+        <section class="card">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="margin: 0 0 0.5rem 0;"><%= calendarDoc.title %></h2>
+              <p class="text-muted" style="margin: 0;">
+                Published: <%= new Date(calendarDoc.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+              </p>
+            </div>
+            <a href="/uploads/<%= calendarDoc.fileName %>" download="<%= calendarDoc.originalName %>" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Calendar
+            </a>
+          </div>
+          
+          <div style="margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <p class="text-muted" style="margin: 0 0 1rem 0;">
+              <strong>Note:</strong> This is the official revised academic calendar. Please download and keep a copy for your records.
+            </p>
+            <p style="margin: 0; color: #64748b;">
+              File: <code style="background: #e2e8f0; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.9rem;"><%= calendarDoc.originalName %></code>
+            </p>
+          </div>
+        </section>
+      <% } else { %>
+        <section class="card">
+          <p class="text-muted">Academic calendar document will be available here once it's been uploaded and approved.</p>
+          <p class="text-muted">Please check back later or contact the Registrar's Office for the current academic calendar.</p>
+        </section>
+      <% } %>
     </main>
   </body>
 </html>

@@ -196,8 +196,49 @@ app.get('/academics', (_req, res) => {
   res.render('academics', { title: 'Academics' });
 });
 
-app.get('/academics/calendar', (_req, res) => {
-  res.render('academics-calendar', { title: 'Academic Calendar' });
+app.get('/academics/calendar', async (_req, res) => {
+  try {
+    // Find approved calendar document first, then pending if none approved
+    let calendarDoc = await prisma.materialSubmission.findFirst({
+      where: {
+        OR: [
+          { title: { contains: 'revised calendar', mode: 'insensitive' } },
+          { title: { contains: 'calendar', mode: 'insensitive' } }
+        ],
+        status: 'approved'
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    // If no approved calendar found, get the most recent one (even if pending)
+    if (!calendarDoc) {
+      calendarDoc = await prisma.materialSubmission.findFirst({
+        where: {
+          OR: [
+            { title: { contains: 'revised calendar', mode: 'insensitive' } },
+            { title: { contains: 'calendar', mode: 'insensitive' } }
+          ]
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+    }
+
+    res.render('academics-calendar', { 
+      title: 'Academic Calendar',
+      calendarDoc: calendarDoc ? {
+        title: calendarDoc.title,
+        fileName: path.basename(calendarDoc.filePath),
+        originalName: calendarDoc.originalName,
+        createdAt: calendarDoc.createdAt
+      } : null
+    });
+  } catch (error) {
+    console.error('Error fetching calendar:', error);
+    res.render('academics-calendar', { 
+      title: 'Academic Calendar',
+      calendarDoc: null
+    });
+  }
 });
 
 app.get('/academics/exams', (_req, res) => {
