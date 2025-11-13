@@ -1,0 +1,59 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+      
+      - name: Generate Prisma Client
+        working-directory: ./server
+        run: npm run prisma:generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      
+      - name: Build server
+        working-directory: ./server
+        run: npm run build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      
+      - name: Deploy to hosting service
+        run: |
+          echo "Deployment configuration needed"
+          echo "Add your deployment commands here"
+          echo "Examples:"
+          echo "  - Railway: railway up"
+          echo "  - Render: render deploy"
+          echo "  - Heroku: git push heroku main"
+          echo "  - Vercel: vercel --prod"
+          echo ""
+          echo "Make sure to set these secrets in GitHub:"
+          echo "  - DATABASE_URL"
+          echo "  - SESSION_SECRET"
+          echo "  - DATABASE_SSL (if needed)"
+

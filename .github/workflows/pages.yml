@@ -1,0 +1,61 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Build documentation site
+        run: |
+          mkdir -p _site
+          # Copy docs to _site
+          cp -r docs/* _site/ || true
+          cp README.md _site/ || true
+          cp PROJECT_STATUS.txt _site/ || true
+          # Create index page
+          echo "# Murena's Students Library Documentation" > _site/index.md
+          echo "" >> _site/index.md
+          echo "Welcome to the project documentation." >> _site/index.md
+          echo "" >> _site/index.md
+          echo "## Available Documentation" >> _site/index.md
+          echo "" >> _site/index.md
+          find docs -name "*.md" -type f | sed 's|docs/||' | sed 's|\.md||' | while read file; do
+            echo "- [$file](/$file)" >> _site/index.md
+          done
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
