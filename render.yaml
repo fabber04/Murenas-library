@@ -10,7 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_SSL
-        value: true
+        value: "true"
       - key: SESSION_SECRET
         generateValue: true
       - key: UPLOADS_DIR
@@ -23,6 +23,8 @@ services:
       name: uploads-disk
       mountPath: /opt/render/project/src/server/uploads
       sizeGB: 1
+    healthCheckPath: /
+    autoDeploy: true
 
 databases:
   - name: murenas-library-db
