@@ -32,20 +32,18 @@
           
           <!-- PDF Viewer -->
           <div style="width: 100%; margin: 2rem 0; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #f8fafc;">
-            <div style="padding: 1rem; background: #fff; border-bottom: 1px solid #e2e8f0;">
+            <div style="padding: 1rem; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
               <p class="text-muted" style="margin: 0; font-size: 0.9rem;">
                 <strong>View Calendar:</strong> Scroll to view the full calendar below, or download for offline access.
               </p>
+              <a href="/uploads/<%= calendarDoc.fileName %>" target="_blank" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+                Open in New Tab
+              </a>
             </div>
-            <div style="width: 100%; min-height: 800px; position: relative;">
-              <embed 
-                src="/uploads/<%= calendarDoc.fileName %>#toolbar=1&navpanes=1&scrollbar=1" 
-                type="application/pdf" 
-                style="width: 100%; height: 800px; border: none; display: block;"
-                title="Academic Calendar PDF">
+            <div style="width: 100%; min-height: 800px;">
               <iframe 
                 src="/uploads/<%= calendarDoc.fileName %>#toolbar=1&navpanes=1&scrollbar=1" 
-                style="width: 100%; height: 800px; border: none; display: block; position: absolute; top: 0; left: 0;"
+                style="width: 100%; height: 800px; border: none; display: block;"
                 title="Academic Calendar PDF Viewer"
                 type="application/pdf">
                 <p style="padding: 2rem; text-align: center; color: #64748b;">
