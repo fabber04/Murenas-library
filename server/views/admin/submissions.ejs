@@ -3,20 +3,139 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Material Submissions - Admin</title>
+    <title><%= title %> - Admin</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <%- include('../partials/header') %>
-    <main style="max-width: 1100px; margin: 2.5rem auto; padding: 0 1rem;">
-      <h1>Material Submissions</h1>
-      <p style="color:#64748b;">List of pending and approved uploads will appear here. This is a placeholder view.</p>
+    <main class="container" style="margin: 2rem auto; padding: 0 1rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <h1><%= title %></h1>
+        <a href="/admin" class="btn btn-secondary">← Back to Dashboard</a>
+      </div>
 
-      <section style="margin-top:1.5rem;">
-        <div style="background:#fff; padding:1rem; border-radius:8px; box-shadow:0 6px 18px rgba(15,23,42,0.06);">
-          <em>No submissions yet — implement listing and moderation actions in the admin controller.</em>
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success">
+          <strong>Success:</strong> <%= success %>
         </div>
-      </section>
+      <% } %>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error">
+          <strong>Error:</strong> <%= error %>
+        </div>
+      <% } %>
+
+      <!-- Statistics Cards -->
+      <div class="grid grid-4" style="margin-bottom: 2rem;">
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 2rem; font-weight: 700; color: var(--warning);"><%= stats.pending %></div>
+          <div class="text-muted">Pending</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 2rem; font-weight: 700; color: var(--success);"><%= stats.approved %></div>
+          <div class="text-muted">Approved</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 2rem; font-weight: 700; color: var(--danger);"><%= stats.rejected %></div>
+          <div class="text-muted">Rejected</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 2rem; font-weight: 700; color: var(--primary);"><%= stats.total %></div>
+          <div class="text-muted">Total</div>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <a href="/admin/submissions?status=all" class="btn <%= currentStatus === 'all' ? 'btn-primary' : 'btn-ghost' %>">All</a>
+          <a href="/admin/submissions?status=pending" class="btn <%= currentStatus === 'pending' ? 'btn-primary' : 'btn-ghost' %>">Pending (<%= stats.pending %>)</a>
+          <a href="/admin/submissions?status=approved" class="btn <%= currentStatus === 'approved' ? 'btn-primary' : 'btn-ghost' %>">Approved</a>
+          <a href="/admin/submissions?status=rejected" class="btn <%= currentStatus === 'rejected' ? 'btn-primary' : 'btn-ghost' %>">Rejected</a>
+        </div>
+      </div>
+
+      <!-- Approve All Button (only show if there are pending) -->
+      <% if (stats.pending > 0 && currentStatus === 'pending') { %>
+        <div class="card" style="margin-bottom: 1.5rem; background: #f0fdf4; border: 1px solid var(--success);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <strong>Approve All Pending</strong>
+              <p class="text-muted" style="margin: 0.5rem 0 0 0;">Approve all <%= stats.pending %> pending submissions at once.</p>
+            </div>
+            <form method="POST" action="/admin/submissions/approve-all" style="margin: 0;" onsubmit="return confirm('Are you sure you want to approve all pending submissions?');">
+              <button type="submit" class="btn btn-success">Approve All</button>
+            </form>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Submissions List -->
+      <div class="card">
+        <% if (submissions.length === 0) { %>
+          <p class="text-muted" style="text-align: center; padding: 2rem;">No submissions found.</p>
+        <% } else { %>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--border);">
+                  <th style="padding: 1rem; text-align: left;">Title</th>
+                  <th style="padding: 1rem; text-align: left;">Course</th>
+                  <th style="padding: 1rem; text-align: left;">Type</th>
+                  <th style="padding: 1rem; text-align: left;">Year</th>
+                  <th style="padding: 1rem; text-align: left;">Status</th>
+                  <th style="padding: 1rem; text-align: left;">Uploaded</th>
+                  <th style="padding: 1rem; text-align: center;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% submissions.forEach(function(submission) { %>
+                  <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 1rem;">
+                      <strong><%= submission.title %></strong>
+                      <br>
+                      <small class="text-muted"><%= submission.originalName %></small>
+                    </td>
+                    <td style="padding: 1rem;"><%= submission.courseId %></td>
+                    <td style="padding: 1rem;">
+                      <span style="text-transform: capitalize;"><%= submission.type.replace('_', ' ') %></span>
+                    </td>
+                    <td style="padding: 1rem;"><%= submission.year %></td>
+                    <td style="padding: 1rem;">
+                      <% if (submission.status === 'pending') { %>
+                        <span style="background: var(--warning); color: white; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600;">Pending</span>
+                      <% } else if (submission.status === 'approved') { %>
+                        <span style="background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600;">Approved</span>
+                      <% } else { %>
+                        <span style="background: var(--danger); color: white; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600;">Rejected</span>
+                      <% } %>
+                    </td>
+                    <td style="padding: 1rem;">
+                      <small class="text-muted">
+                        <%= new Date(submission.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                      </small>
+                    </td>
+                    <td style="padding: 1rem;">
+                      <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="/uploads/<%= submission.filePath.split('/').pop() %>" target="_blank" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">View</a>
+                        <% if (submission.status === 'pending') { %>
+                          <form method="POST" action="/admin/submissions/<%= submission.id %>/approve" style="display: inline; margin: 0;">
+                            <button type="submit" class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Approve</button>
+                          </form>
+                          <form method="POST" action="/admin/submissions/<%= submission.id %>/reject" style="display: inline; margin: 0;">
+                            <button type="submit" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Reject</button>
+                          </form>
+                        <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
     </main>
   </body>
 </html>
