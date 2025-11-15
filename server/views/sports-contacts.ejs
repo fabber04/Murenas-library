@@ -8,9 +8,46 @@
   </head>
   <body>
     <%- include('partials/header') %>
-    <main style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
-      <h1><%= title %></h1>
-      <p style="color: #666;">Content coming soon...</p>
+    <main class="container src-page">
+      <h1 class="mt-2 text-center"><%= title %></h1>
+
+      <section class="card src-section">
+        <h2 class="text-center">Sports Captains</h2>
+        <p class="text-muted text-center">
+          Meet our dedicated sports captains leading teams across various disciplines.
+        </p>
+
+        <div class="src-hero-grid mt-3">
+          <% (captains || []).forEach(function(captain){ %>
+            <article class="src-card src-card--hero">
+              <div class="src-card__image">
+                <% if (captain.photoUrl) { %>
+                  <img src="<%= captain.photoUrl %>" alt="<%= captain.name %>, <%= captain.sport %> <%= captain.position %>" loading="lazy" />
+                <% } else { %>
+                  <%
+                    const initials = (captain.name || '').split(' ').map(function(n){ return n.charAt(0); }).filter(Boolean).slice(0, 2).join('').toUpperCase();
+                    const colors = ['#F59E0B','#EF4444','#10B981','#3B82F6','#8B5CF6','#EC4899','#06B6D4'];
+                    const hash = (captain.name || '').split('').reduce(function(a,c){ return a + c.charCodeAt(0); }, 0);
+                    const bg = colors[hash % colors.length];
+                  %>
+                  <div class="src-card__placeholder" style="background:<%= bg %>;" aria-hidden="true">
+                    <span><%= initials || '??' %></span>
+                  </div>
+                <% } %>
+              </div>
+              <div class="src-card__body">
+                <div class="src-card__position"><%= captain.sport %> <%= captain.position %></div>
+                <div class="src-card__name"><%= captain.name %></div>
+                <% if (captain.contact) { %>
+                  <div class="src-card__contact mt-1">
+                    <a href="tel:<%= captain.contact %>"><%= captain.contact %></a>
+                  </div>
+                <% } %>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      </section>
     </main>
   </body>
 </html>

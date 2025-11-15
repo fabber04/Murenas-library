@@ -353,7 +353,48 @@ app.get('/sports/venues', (_req, res) => {
 });
 
 app.get('/sports/contacts', (_req, res) => {
-  res.render('sports-contacts', { title: 'Coaches & Captains' });
+  const captains = [
+    {
+      name: 'Bernard Hlungupi',
+      sport: 'Volleyball',
+      position: 'Captain',
+      photoUrl: '/images/Sports/Bernard Hlungupi..Volleyball Captain.jpeg',
+      contact: null
+    },
+    {
+      name: 'Blessing Jani',
+      sport: 'Soccer',
+      position: 'Captain',
+      photoUrl: '/images/Sports/Blessing Jani .. Soccer Captain ...+263 771132858.jpeg',
+      contact: '+263 771132858'
+    },
+    {
+      name: 'Ngobile Nkosikhona Ndebele',
+      sport: 'Tennis',
+      position: 'Captain',
+      photoUrl: '/images/Sports/Ngobile Nkosikhona Ndebele...Tennis Captain..+263 782062436.jpeg',
+      contact: '+263 782062436'
+    },
+    {
+      name: 'SheAnesu Valentine Matiure',
+      sport: 'Swimming',
+      position: 'Captain',
+      photoUrl: '/images/Sports/SheAnesu Valentine Matiure....Swimming captain...+263 772969562.jpeg',
+      contact: '+263 772969562'
+    },
+    {
+      name: 'Tinotenda',
+      sport: 'Handball',
+      position: 'Captain',
+      photoUrl: '/images/Sports/Tinotenda ..Handball Captain ...+263 785623411.jpeg',
+      contact: '+263 785623411'
+    }
+  ];
+
+  res.render('sports-contacts', { 
+    title: 'Coaches & Captains',
+    captains 
+  });
 });
 
 app.get('/sports/competitions', (_req, res) => {
